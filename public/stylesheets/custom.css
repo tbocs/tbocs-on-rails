@@ -6,6 +6,7 @@ body {
   background: #cff;
 }
 
+
 header {
   padding-top: 20px;
 }
@@ -13,6 +14,14 @@ header {
 header img {
   padding: 1em;
   background: #fff;
+}
+
+header:after {
+  content: ".";
+  clear: both;
+  visibility: hidden;
+  display: block;
+  line-height: 0px;
 }
 
 section {
@@ -88,4 +97,3 @@ footer {
 footer nav {
   float: none;
 }
-
