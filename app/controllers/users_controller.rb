@@ -52,22 +52,21 @@ class UsersController < ApplicationController
  private
 
   def authenticate
-    deny_access unless signed_in?
+    require_access unless signed_in?
   end
 
   def correct_user
     @user = User.find(params[:id])
-    unless current_user?(@user)
-      flash[:error] = "You do not have the permission for this operation!"
-      redirect_to(root_path) 
-    end
+    deny_access unless current_user?(@user)
   end
 
   def admin_user
-    unless current_user.admin?
-      flash[:error] = "You do not have the permission for this operation!"
-      redirect_to(root_path)
-    end
+    deny_access unless current_user.admin?
+  end
+
+  def deny_access
+    flash[:error] = "You do not have the permission for this operation!"
+    redirect_to(root_path)
   end
 
 end
