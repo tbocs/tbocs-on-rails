@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate, :only => [:index, :edit, :update]
   before_filter :correct_user, :only => [:edit, :update]
+  before_filter :admin_user, :only => [:destroy]
 
   def new
     @user = User.new
@@ -8,7 +9,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.all
+    @users = User.paginate(:page => params[:page])
     @title = "All users yay"
   end
 
@@ -43,6 +44,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    user = User.find(params[:id]).destroy
+    flash[:success] = "User #{user.name} destroyed."
+    redirect_to users_path
+  end
  private
 
   def authenticate
@@ -51,6 +57,17 @@ class UsersController < ApplicationController
 
   def correct_user
     @user = User.find(params[:id])
-    redirect_to(root_path) unless current_user?(@user)
+    unless current_user?(@user)
+      flash[:error] = "You do not have the permission for this operation!"
+      redirect_to(root_path) 
+    end
   end
+
+  def admin_user
+    unless current_user.admin?
+      flash[:error] = "You do not have the permission for this operation!"
+      redirect_to(root_path)
+    end
+  end
+
 end
