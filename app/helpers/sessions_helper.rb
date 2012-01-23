@@ -33,6 +33,10 @@ module SessionsHelper
     cookies.signed[:remember_token] || [nil, nil]
   end
 
+  def authenticate
+    require_access unless signed_in?
+  end
+
   def require_access
     store_location
     redirect_to signin_path, :notice=> "Please sign in to access this page"
